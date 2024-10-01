@@ -2,7 +2,7 @@
 
 
 
-Hello, I’m Ravi Solanki, and I’ve undertaken this project as part of my Bachelor of Science in Mathematics and Statistics at Brock University. The goal was to predict Formula-1 race outcomes using advanced data science techniques. I leveraged telemetry data from the FastF1 API, explored machine learning models, and performed ETL processes to convert raw data into actionable insights.
+Hello, I’m Ravi Solanki, and I’ve worked on this project as part of my Bachelor of Science in Mathematics and Statistics at Brock University. The goal was to predict Formula-1 race outcomes using advanced data science techniques. I leveraged telemetry data from the FastF1 API, explored machine learning models, and performed ETL processes to convert raw data into actionable insights.
 
 Project Overview
 
