@@ -2,63 +2,99 @@
 
 
 
+Hello, I’m Ravi Solanki, and I’ve undertaken this project as part of my Bachelor of Science in Mathematics and Statistics at Brock University. The goal was to predict Formula-1 race outcomes using advanced data science techniques. I leveraged telemetry data from the FastF1 API, explored machine learning models, and performed ETL processes to convert raw data into actionable insights.
+
+Project Overview
+
+In Formula-1, milliseconds count, and data science can make a world of difference. This project focuses on utilizing race telemetry data to predict drivers’ performance based on various metrics like speed, throttle, RPM, and brake application. Through machine learning models such as Linear Regression and Random Forest, I aimed to develop reliable predictions for race outcomes.
+
+Data Extraction and ETL
+
+To begin, I extracted raw telemetry data using the FastF1 API, which provides in-depth information on each lap of a Formula-1 race. I also scraped race points and standings from Formula 1’s official website. This process involved:
+
+Extract: I pulled detailed telemetry data (speed, throttle, RPM, and brake) lap by lap for each race, in addition to gathering driver performance data.
+Transform: The raw data was cleaned and transformed into structured datasets. I handled missing values, standardized variables, and aggregated data at the lap, race, and season levels.
+Load: The cleaned datasets were loaded into data frames for easy access and further analysis, including machine learning model development.
+
+Example Code for Data Extraction:
+
+import fastf1
+fastf1.Cache.enable_cache('cache')
+
+# Extract session data for a specific race
+session = fastf1.get_session(2022, 'Monza', 'R')
+session.load()
+
+# Extract lap data for a specific driver
+laps = session.laps.pick_driver('VER')
+
+
+Data Analysis and Feature Engineering
+
+I conducted Exploratory Data Analysis (EDA) on key telemetry variables to identify trends and patterns across races. I aggregated the data into both lap-wise and race-wise subsets to capture insights across different scales.
+
+For example, the function summarize_lap_data() calculates the average speed, throttle, RPM, and brake usage for each lap, which helps analyze driver performance fluctuations throughout the race:
+
+def summarize_lap_data(lap):
+    avg_speed = lap['Speed'].mean()
+    avg_throttle = lap['Throttle'].mean()
+    avg_rpm = lap['RPM'].mean()
+    return avg_speed, avg_throttle, avg_rpm
 
 
 
+Machine Learning Models
+
+Linear Regression
+
+Linear regression was applied to explore the relationship between telemetry variables and race outcomes (i.e., driver points). Although it provided a baseline model, the results showed that race outcomes are influenced by additional factors that were not captured by this model alone.
+
+from sklearn.linear_model import LinearRegression
+model = LinearRegression()
+
+# Preparing the data
+X = lap_summary[['Average_Speed', 'Average_RPM', 'Throttle']]
+y = lap_summary['Points']
+
+# Fitting the model
+model.fit(X, y)
+
+Random Forest Regression
+
+The Random Forest model was introduced to capture non-linear relationships and handle high-dimensional data. This model outperformed linear regression but still indicated the need for more features such as tire data and weather conditions.
+
+from sklearn.ensemble import RandomForestRegressor
+
+# Training the Random Forest model
+rf_model = RandomForestRegressor(n_estimators=100, max_depth=8)
+rf_model.fit(X_train, y_train)
 
 
+Clustering Analysis
 
+To further understand the drivers’ behavior, I employed K-means Clustering to group drivers based on their telemetry data. Silhouette analysis was used to evaluate the quality of the clusters. The clustering helped identify patterns that could inform strategy adjustments and performance insights:
 
+from sklearn.cluster import KMeans
+kmeans = KMeans(n_clusters=2)
+kmeans.fit(X)
 
+The analysis revealed two distinct clusters in driver behavior, confirming that performance varies significantly based on telemetry data.
 
+Results and Reflections
 
-1 Introduction 
+Model Performance: The Random Forest model achieved modest success in predicting driver points, but there is potential for improvement by incorporating additional race conditions such as weather, tire choices, and pit stop strategies.
+Cluster Insights: Clustering analysis uncovered two primary performance profiles, suggesting that some drivers are consistently better under specific race conditions.
 
-In the high-speed, high-stakes world of Formula 1, the difference between victory and defeat often lies in the fractions of a second. This realm of roaring engines and lightning-fast reflexes may seem an unlikely place for data science to make its mark, yet this is exactly where it thrives. Just like a well-oiled engine, the gears of this cutting-edge discipline hum in harmony with the rhythm of F1. From race strategy to car design and driver performance, data science is the invisible co-pilot, charting the path to the podium. In this project, we delve into how data science applications are revolutionizing the world of Formula 1, making it a sleek, digitally driven sport.
+Future Enhancements
 
-1.1 Formula 1
+To improve prediction accuracy, I plan to:
 
-In Formula 1, drivers control high-speed vehicles to be the first to complete a set number of laps, thus securing victory. However, it's not merely about racing; in Formula 1 teams of drivers, mechanics, and engineers work together to integrate technological innovation, strategic planning, and driving skills. Each season, teams participate in a sequence of races, known as Grands Prix, held on various circuits worldwide. These races occur over a weekend, commencing with two practice sessions on Friday, an additional one on Saturday, and a qualifying round. The final race, the true test of endurance and speed, takes place on Sunday.
+Integrate Additional Features: Include tire data, weather conditions, and track details to capture more variables that influence race outcomes.
+Advanced Modeling: Experiment with time series analysis and more complex models like XGBoost.
+Optimization: Enhance the ETL process to ensure cleaner, higher-quality data.
 
-During Friday's practice session, drivers familiarize themselves with their vehicles to mitigate issues such as understeering or unstable handling. Their performance during Saturday's qualifying rounds is crucial as it determines their starting position for the Grand Prix. A superior performance leads to an advantageous starting position. A lower starting position, on the other hand, imposes a significant challenge, compelling the driver to overtake up to 19 other drivers, each traveling at speeds exceeding 200mph! Qualifying consists of three segments: Q1, Q2, and Q3. In Q1, all 20 drivers have 18 minutes to record their fastest lap. The slowest five are eliminated, securing the final five slots on the grid (starting formation of the cars before the race begins). Q2 follows, lasting 15 minutes, with the five slowest drivers once again eliminated, determining grid positions 11 to 15. Similarly, with Q3 the final round with which the starting order for the Grand Prix is set. Qualifying is a tactical play that influences the race. The top ten qualifiers must commence the race on the tires used to clock their fastest lap in Q2. This rule forces teams to strike a balance between a quicker qualifying time and an optimal race strategy. Meanwhile, those who didn't advance to Q3 have the liberty to choose their tires, occasionally allowing them to deploy innovative strategies to compensate for their grid position deficit. 
+Conclusion
 
+This project highlights the potential of data science in Formula 1 racing. By combining machine learning with rigorous data analysis, we can uncover actionable insights that can influence race strategy and performance optimization. The project is a great example of how data-driven decision-making can enhance a sport driven by fractions of a second.
 
-The top 10 finishers in each race earn points. The driver securing the first position receives 25 points, the second-place finisher 18 points, the third-place finisher 15 points, and so on, down to the tenth-place driver who is awarded 1 point. Points are accumulated by drivers and teams throughout the season, and the one amassing the most points claims the championship.
-
-Position	Points Awarded
-1st 	        25
-2nd 	        18
-3rd 	        15
-4th 	        12
-5th 	        10
-6th 	         8
-7th 	         6
-8th 	         4
-9th 	         2
-10th 	         1
-
-
-
-2. Data
-In this chapter, we will explore the telemetry data obtained from the FastF1 API, a comprehensive tool for accessing Formula 1 timing and telemetry data. Telemetry data offers intricate details about each lap driven by the Formula 1 cars, providing insights into the performance and strategies adopted by teams and drivers. FastF1 is a Python library that allows users to access Formula 1 timing and telemetry data. It provides functionalities to fetch event schedules, race results, lap times, and detailed telemetry data for each driver.
-
-	Telemetry Data
-	Telemetry data in Formula 1 refers to the detailed information collected from various sensors installed on a race car during a race or practice sessions. This data includes metrics like speed, throttle and brake application, gear selection, engine RPM, and tire temperature. It provides real-time insights into the car's performance and the driver's behavior on the track. Teams analyze this data to optimize car setup, improve race strategies, and enhance driver performance, making it an indispensable tool in the highly competitive world of Formula 1 racing. The telemetry data includes several key metrics:
-	
-	Speed: The car's speed at various points on the track.
-	Throttle: The degree of throttle application by the driver.
-	Brake: Indicates if and how hard the driver is braking.
-	Gear: Current gear in which the car is.
-	RPM: Engine revolutions per minute.
-	DRS: Status of the Drag Reduction System (DRS)
-
-For our analysis, the focus will be narrowed to key telemetry variables: Speed, Throttle, RPM, and Brake. These specific metrics provide a comprehensive view of a car's performance dynamics and driver behavior. We will aggregate this data across various scales, encompassing individual races and spanning the entire season...... 
-
-
-
-
-
-
-To continue reading the full report, please download the 'Honors Project' pdf.
-
-
+For a deeper dive into the methodology and complete analysis, check out the full report, 'Honors_Project'
