@@ -17,7 +17,7 @@ Transform: The raw data was cleaned and transformed into structured datasets. I 
 Load: The cleaned datasets were loaded into data frames for easy access and further analysis, including machine learning model development.
 
 Example Code for Data Extraction:
-
+```
 import fastf1
 fastf1.Cache.enable_cache('cache')
 
@@ -26,8 +26,8 @@ session = fastf1.get_session(2022, 'Monza', 'R')
 session.load()
 
 # Extract lap data for a specific driver
-laps = session.laps.pick_driver('VER')
-
+laps = session.laps.pick_driver('VER')  
+```
 
 Data Analysis and Feature Engineering
 
@@ -35,12 +35,13 @@ I conducted Exploratory Data Analysis (EDA) on key telemetry variables to identi
 
 For example, the function summarize_lap_data() calculates the average speed, throttle, RPM, and brake usage for each lap, which helps analyze driver performance fluctuations throughout the race:
 
+```
 def summarize_lap_data(lap):
     avg_speed = lap['Speed'].mean()
     avg_throttle = lap['Throttle'].mean()
     avg_rpm = lap['RPM'].mean()
     return avg_speed, avg_throttle, avg_rpm
-
+```
 
 
 Machine Learning Models
@@ -49,6 +50,7 @@ Linear Regression
 
 Linear regression was applied to explore the relationship between telemetry variables and race outcomes (i.e., driver points). Although it provided a baseline model, the results showed that race outcomes are influenced by additional factors that were not captured by this model alone.
 
+```
 from sklearn.linear_model import LinearRegression
 model = LinearRegression()
 
@@ -58,25 +60,28 @@ y = lap_summary['Points']
 
 # Fitting the model
 model.fit(X, y)
+```
 
 Random Forest Regression
 
 The Random Forest model was introduced to capture non-linear relationships and handle high-dimensional data. This model outperformed linear regression but still indicated the need for more features such as tire data and weather conditions.
 
+```
 from sklearn.ensemble import RandomForestRegressor
 
 # Training the Random Forest model
 rf_model = RandomForestRegressor(n_estimators=100, max_depth=8)
 rf_model.fit(X_train, y_train)
-
+```
 
 Clustering Analysis
 
 To further understand the drivers’ behavior, I employed K-means Clustering to group drivers based on their telemetry data. Silhouette analysis was used to evaluate the quality of the clusters. The clustering helped identify patterns that could inform strategy adjustments and performance insights:
-
+```
 from sklearn.cluster import KMeans
 kmeans = KMeans(n_clusters=2)
 kmeans.fit(X)
+```
 
 The analysis revealed two distinct clusters in driver behavior, confirming that performance varies significantly based on telemetry data.
 
